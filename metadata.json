@@ -1,0 +1,6 @@
+{
+  "name": "LunaWeather Predictor 2.0",
+  "description": "Prognoza jakości nocy, animowany Księżyc, kalendarz faz oraz dziennik snu i notatek",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

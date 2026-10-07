@@ -1,0 +1,30 @@
+{
+  "entities": {
+    "SleepEntry": {
+      "title": "SleepEntry",
+      "description": "Zapis snu użytkownika wraz z oceną i notatką",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "date": { "type": "string", "maxLength": 32 },
+        "dayLabel": { "type": "string", "maxLength": 32 },
+        "rating": { "type": "number" },
+        "ratingScore": { "type": "number" },
+        "hoursSlept": { "type": "number" },
+        "mood": { "type": "string", "maxLength": 32 },
+        "notes": { "type": "string", "maxLength": 1000 },
+        "lunaSleepForecast": { "type": "number" },
+        "moonPhasePct": { "type": "number" },
+        "userId": { "type": "string", "maxLength": 128 },
+        "timestamp": { "type": "number" }
+      },
+      "required": ["id", "date", "rating", "userId"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}/sleep_entries/{entryId}": {
+      "schema": "SleepEntry",
+      "description": "Prywatne wpisy snu i notatki użytkownika"
+    }
+  }
+}

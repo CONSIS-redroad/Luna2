@@ -1,0 +1,38 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidSleepEntry(data, userId) {
+      return data.keys().hasAll(['id', 'date', 'rating', 'userId']) &&
+        data.id is string && data.id.size() <= 128 &&
+        data.date is string && data.date.size() <= 32 &&
+        data.rating is number && data.rating >= 1 && data.rating <= 5 &&
+        data.userId == userId &&
+        (!('notes' in data) || (data.notes is string && data.notes.size() <= 1000));
+    }
+
+    match /users/{userId}/sleep_entries/{entryId} {
+      allow get: if isOwner(userId) && isValidId(entryId);
+      allow list: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidId(entryId) && isValidSleepEntry(request.resource.data, userId);
+      allow update: if isOwner(userId) && isValidId(entryId) && isValidSleepEntry(request.resource.data, userId) &&
+        request.resource.data.userId == resource.data.userId;
+      allow delete: if isOwner(userId) && isValidId(entryId);
+    }
+  }
+}
